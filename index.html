@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxia para ti</title>
+    <style>
+        body { margin: 0; background: #000; overflow: hidden; color: white; font-family: sans-serif; text-align: center; }
+        canvas { display: block; }
+        #mensaje { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+        h1 { font-size: 2rem; text-shadow: 0 0 10px #ff0; }
+        p { font-size: 1.2rem; opacity: 0.8; }
+        .instruccion { position: absolute; bottom: 20px; width: 100%; font-size: 0.8rem; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div id="mensaje">
+        <h1>Te Amo Muchote 💛</h1>
+        <p>Mis Ojitos Brillantes ✨</p>
+    </div>
+
+    <div class="instruccion">Toca la pantalla para la música 🎵</div>
+
+    <audio id="musica" loop>
+        <source src="cancion.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Animación básica de Galaxia
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsCount = 15000;
+        const posArray = new Float32Array(starsCount * 3);
+        for(let i=0; i < starsCount * 3; i++) { posArray[i] = (Math.random() - 0.5) * 100; }
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const starsMaterial = new THREE.PointsMaterial({ size: 0.02, color: 0xffff00 });
+        const starMesh = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(starMesh);
+        camera.position.z = 2;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            starMesh.rotation.y += 0.001;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Lógica de la música al tocar
+        document.body.addEventListener('click', () => {
+            const audio = document.getElementById('musica');
+            audio.play();
+            document.querySelector('.instruccion').style.display = 'none';
+        }, { once: true });
+    </script>
+</body>
+</html>
